@@ -38,6 +38,7 @@ jobs:
         port: ${{ secrets.EC2_PORT }}
         key: ${{ secrets.EC2_KEY }}
         script: |
+          touch my-test
           cd /home/ubuntu
           if [ ! -d flaskerino ]; then
             git clone https://github.com/${{ github.repository }}.git flaskerino
