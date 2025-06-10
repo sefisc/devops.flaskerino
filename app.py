@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 # Environment variables (with sensible fall-backs)
 DESIRED_PATH = os.getenv("DESIRED_PATH", "/")          # e.g. "/hello"
-PORT         = int(os.getenv("PORT", 80))              # e.g. "8080"
+PORT         = int(os.getenv("PORT", 8080))              # e.g. "8080"
 NUMBER       = os.getenv("NUMBER", "0")                # e.g. "1"
 
 # Main endpoint — path is dynamic
