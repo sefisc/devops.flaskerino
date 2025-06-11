@@ -58,7 +58,7 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
           sudo apt update
-          sudo apt install docker.io
+          sudo apt install docker.io -y
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }}
           docker stop flaskerino || true
           docker rm flaskerino  || true
