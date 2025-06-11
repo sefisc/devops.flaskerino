@@ -59,10 +59,10 @@ jobs:
         script: |
           sudo apt update
           sudo apt install docker.io -y
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }}
-          docker stop flaskerino || true
-          docker rm flaskerino  || true
-          docker run -d \
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }}
+          sudo docker stop flaskerino || true
+          sudo docker rm flaskerino  || true
+          sudo docker run -d \
             --name flaskerino \
             -p 80:8000 \
             ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }}
