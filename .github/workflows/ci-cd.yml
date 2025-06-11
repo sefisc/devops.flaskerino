@@ -12,6 +12,8 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
+    # Testing Phase
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -30,6 +32,23 @@ jobs:
         sys.exit(0 if ok else 1)
         PY
 
+    # Create, build & push Docker image with a new Version
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }},${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:latest
+
+    # Deploy the app in EC2
+
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v1.2.2  # latest stable tag :contentReference[oaicite:0]{index=0}
       with:
@@ -38,10 +57,12 @@ jobs:
         port: ${{ secrets.EC2_PORT }}
         key: ${{ secrets.EC2_KEY }}
         script: |
-          cd /home/ubuntu
-          
-          rm -rf flaskerino
-          git clone https://github.com/${{ github.repository }}.git flaskerino
-          
-          /home/ubuntu/venv/bin/pip install -r requirements.txt
-          sudo systemctl restart flaskapp
+          sudo apt update
+          sudo apt install docker.io
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }}
+          docker stop flaskerino || true
+          docker rm flaskerino  || true
+          docker run -d \
+            --name flaskerino \
+            -p 80:8000 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ github.sha }}
