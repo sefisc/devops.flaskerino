@@ -39,8 +39,8 @@ jobs:
             --region ${{ secrets.AWS_REGION }}
 
       - name: Substitute image placeholder
-        run: sed -i "s|IMAGE_REPLACE|${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ env.IMAGE_TAG }}|g" manifests/flaskerino.yaml
+        run: sed -i "s|IMAGE_REPLACE|${{ secrets.DOCKERHUB_USERNAME }}/flaskerino:${{ env.IMAGE_TAG }}|g" k8s/flaskerino.yaml
 
       - name: Apply Deployment
-        run: kubectl apply -f manifests/flaskerino.yaml
+        run: kubectl apply -f k8s/flaskerino.yaml
 
